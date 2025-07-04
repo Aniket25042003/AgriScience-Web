@@ -1,0 +1,21 @@
+# Web Framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+
+# Data Processing & Machine Learning
+numpy==1.26.4
+scikit-learn==1.6.1
+joblib==1.5.1
+
+# TensorFlow for Apple Silicon (M1/M2 Macs) - Python 3.12 compatible
+tensorflow==2.18.0
+
+# Image Processing
+Pillow==10.1.0
+
+# Data Validation
+pydantic==2.5.0
+
+# Testing (optional)
+requests==2.31.0
