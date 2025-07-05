@@ -11,7 +11,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",
         "http://localhost:5173",
-        "https://your-frontend-domain.vercel.app",  # Replace with your actual Vercel domain
+        "https://agriscience.onrender.com",
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST"],
