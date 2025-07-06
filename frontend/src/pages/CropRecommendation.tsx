@@ -43,6 +43,8 @@ const CropRecommendation: React.FC = () => {
     e.preventDefault();
     setLoading(true);
 
+    console.log('[CropRecommendation] API_BASE_URL:', config.API_BASE_URL);
+
     try {
       const requestData = {
         N: parseFloat(formData.nitrogen),
@@ -62,6 +64,10 @@ const CropRecommendation: React.FC = () => {
         body: JSON.stringify(requestData)
       });
 
+      console.log('[CropRecommendation] Request URL:', `${config.API_BASE_URL}/recommend_crops`);
+      console.log('[CropRecommendation] Request payload:', requestData);
+      console.log('[CropRecommendation] Response status:', response.status);
+
       if (!response.ok) {
         const errorText = await response.text();
         console.error('API Error:', errorText);
@@ -69,6 +75,7 @@ const CropRecommendation: React.FC = () => {
       }
 
       const data = await response.json();
+      console.log('[CropRecommendation] Response JSON:', data);
       const cropRecommendations = data.recommended_crops.map(([name, confidence]: [string, number]) => ({
         name,
         confidence: Math.round(confidence),

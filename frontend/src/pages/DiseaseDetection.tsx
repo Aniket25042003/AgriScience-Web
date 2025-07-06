@@ -64,21 +64,31 @@ const DiseaseDetection: React.FC = () => {
     
     setLoading(true);
     
+    console.log('[DiseaseDetection] API_BASE_URL:', config.API_BASE_URL);
+
     try {
       const formData = new FormData();
       formData.append('file', selectedFile);
       
+      console.log('[DiseaseDetection] Sending request to', `${config.API_BASE_URL}/detect_disease`);
+      console.log('[DiseaseDetection] Selected file:', selectedFile);
+
       const response = await fetch(`${config.API_BASE_URL}/detect_disease`, {
         method: 'POST',
         body: formData
       });
       
+      console.log('[DiseaseDetection] Response status:', response.status);
+
       if (!response.ok) {
         const errorText = await response.text();
+        console.error('[DiseaseDetection] Error text:', errorText);
         throw new Error(`Failed to analyze plant image: ${response.status} ${errorText}`);
       }
       
       const data = await response.json();
+      
+      console.log('[DiseaseDetection] Response JSON:', data);
       
       const result: DetectionResult = {
         status: data.result === 'Healthy' ? 'healthy' : 'diseased',
