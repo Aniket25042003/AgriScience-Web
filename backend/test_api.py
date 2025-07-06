@@ -4,6 +4,45 @@
 import requests
 import json
 
+# Test the health endpoint
+print("Testing health endpoint...")
+response = requests.get("https://agriscience.onrender.com/")
+print(f"Status: {response.status_code}")
+print(f"Response: {response.json()}")
+
+# Test the crop recommendation endpoint
+print("\nTesting crop recommendation endpoint...")
+crop_data = {
+    "N": 90,
+    "P": 42,
+    "K": 43,
+    "temperature": 20.87,
+    "humidity": 82.00,
+    "ph": 6.5,
+    "rainfall": 103
+}
+
+response = requests.post(
+    "https://agriscience.onrender.com/recommend_crops",
+    headers={"Content-Type": "application/json"},
+    data=json.dumps(crop_data)
+)
+print(f"Status: {response.status_code}")
+print(f"Response: {response.json()}")
+
+# Test CORS preflight
+print("\nTesting CORS preflight...")
+response = requests.options(
+    "https://agriscience.onrender.com/recommend_crops",
+    headers={
+        "Origin": "https://agriscience-web.vercel.app",
+        "Access-Control-Request-Method": "POST",
+        "Access-Control-Request-Headers": "Content-Type"
+    }
+)
+print(f"Status: {response.status_code}")
+print(f"CORS Headers: {dict(response.headers)}")
+
 def test_crop_recommendation():
     """Test crop recommendation with new model"""
     print("🌾 Testing Crop Recommendation...")

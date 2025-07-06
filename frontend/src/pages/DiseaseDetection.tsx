@@ -68,13 +68,20 @@ const DiseaseDetection: React.FC = () => {
       const formData = new FormData();
       formData.append('file', selectedFile);
       
+      console.log('Making API request to:', `${config.API_BASE_URL}/detect_disease`);
+      
       const response = await fetch(`${config.API_BASE_URL}/detect_disease`, {
         method: 'POST',
         body: formData
       });
       
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
+      
       if (!response.ok) {
-        throw new Error('Failed to analyze plant image');
+        const errorText = await response.text();
+        console.error('API Error:', errorText);
+        throw new Error(`Failed to analyze plant image: ${response.status} ${errorText}`);
       }
       
       const data = await response.json();

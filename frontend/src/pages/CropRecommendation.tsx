@@ -54,6 +54,9 @@ const CropRecommendation: React.FC = () => {
         rainfall: parseFloat(formData.rainfall)
       };
 
+      console.log('Making API request to:', `${config.API_BASE_URL}/recommend_crops`);
+      console.log('Request data:', requestData);
+      
       const response = await fetch(`${config.API_BASE_URL}/recommend_crops`, {
         method: 'POST',
         headers: {
@@ -62,8 +65,13 @@ const CropRecommendation: React.FC = () => {
         body: JSON.stringify(requestData)
       });
 
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
+
       if (!response.ok) {
-        throw new Error('Failed to get crop recommendations');
+        const errorText = await response.text();
+        console.error('API Error:', errorText);
+        throw new Error(`Failed to get crop recommendations: ${response.status} ${errorText}`);
       }
 
       const data = await response.json();

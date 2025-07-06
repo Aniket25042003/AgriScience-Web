@@ -12,15 +12,22 @@ app.add_middleware(
         "http://localhost:3000",
         "http://localhost:5173",
         "https://agriscience.onrender.com",
+        "https://agriscience-web.vercel.app",
+        "https://agriscience-web-git-main.vercel.app",
+        "*"  # Allow all origins for development
     ],
     allow_credentials=True,
-    allow_methods=["GET", "POST"],
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
 
 @app.get("/")
 def root():
     return {"message": "AgriScience API is running", "status": "healthy"}
+
+@app.get("/health")
+def health_check():
+    return {"message": "AgriScience API is running", "status": "healthy", "timestamp": "2025-01-05T02:57:23Z"}
 
 class CropRequest(BaseModel):
     N: float
@@ -33,10 +40,15 @@ class CropRequest(BaseModel):
 
 @app.post("/recommend_crops")
 def recommend_crops(data: CropRequest):
-    return {"recommended_crops": recommend_top_3_crops(data)}
+    print(f"Received crop recommendation request: {data}")
+    result = recommend_top_3_crops(data)
+    print(f"Returning recommendations: {result}")
+    return {"recommended_crops": result}
 
 @app.post("/detect_disease")
 def detect_disease(file: UploadFile = File(...)):
+    print(f"Received disease detection request for file: {file.filename}")
     contents = file.file.read()
     result, confidence = detect_disease_from_image(contents)
+    print(f"Detection result: {result}, confidence: {confidence}")
     return {"result": result, "confidence": confidence} 
