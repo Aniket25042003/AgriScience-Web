@@ -12,6 +12,7 @@ app.add_middleware(
         "http://localhost:3000",
         "http://localhost:5173",
         "https://agriscience.onrender.com",
+        "https://agriscience.vercel.app",
         "https://agriscience-web.vercel.app",
         "https://agriscience-web-git-main.vercel.app",
         "*"  # Allow all origins for development
@@ -38,12 +39,20 @@ class CropRequest(BaseModel):
     ph: float
     rainfall: float
 
+@app.options("/recommend_crops")
+def recommend_crops_options():
+    return {"message": "OK"}
+
 @app.post("/recommend_crops")
 def recommend_crops(data: CropRequest):
     print(f"Received crop recommendation request: {data}")
     result = recommend_top_3_crops(data)
     print(f"Returning recommendations: {result}")
     return {"recommended_crops": result}
+
+@app.options("/detect_disease")
+def detect_disease_options():
+    return {"message": "OK"}
 
 @app.post("/detect_disease")
 def detect_disease(file: UploadFile = File(...)):

@@ -8,7 +8,13 @@ import json
 print("Testing health endpoint...")
 response = requests.get("https://agriscience.onrender.com/")
 print(f"Status: {response.status_code}")
-print(f"Response: {response.json()}")
+print(f"Response headers: {dict(response.headers)}")
+print(f"Response text: {response.text}")
+if response.status_code == 200:
+    try:
+        print(f"Response JSON: {response.json()}")
+    except:
+        print("Could not parse JSON response")
 
 # Test the crop recommendation endpoint
 print("\nTesting crop recommendation endpoint...")
@@ -30,18 +36,48 @@ response = requests.post(
 print(f"Status: {response.status_code}")
 print(f"Response: {response.json()}")
 
-# Test CORS preflight
-print("\nTesting CORS preflight...")
+# Test CORS preflight for crop recommendation
+print("\nTesting CORS preflight for crop recommendation...")
 response = requests.options(
     "https://agriscience.onrender.com/recommend_crops",
     headers={
-        "Origin": "https://agriscience-web.vercel.app",
+        "Origin": "https://agriscience.vercel.app",
         "Access-Control-Request-Method": "POST",
         "Access-Control-Request-Headers": "Content-Type"
     }
 )
 print(f"Status: {response.status_code}")
 print(f"CORS Headers: {dict(response.headers)}")
+
+# Test CORS preflight for disease detection
+print("\nTesting CORS preflight for disease detection...")
+response = requests.options(
+    "https://agriscience.onrender.com/detect_disease",
+    headers={
+        "Origin": "https://agriscience.vercel.app",
+        "Access-Control-Request-Method": "POST",
+        "Access-Control-Request-Headers": "Content-Type"
+    }
+)
+print(f"Status: {response.status_code}")
+print(f"CORS Headers: {dict(response.headers)}")
+
+# Test the disease detection endpoint with a file
+print("\nTesting disease detection endpoint...")
+try:
+    # Use a simple test file
+    files = {'file': ('test.jpg', b'fake image data', 'image/jpeg')}
+    response = requests.post(
+        "https://agriscience.onrender.com/detect_disease",
+        files=files
+    )
+    print(f"Status: {response.status_code}")
+    if response.status_code == 200:
+        print(f"Response: {response.json()}")
+    else:
+        print(f"Error response: {response.text}")
+except Exception as e:
+    print(f"Error: {e}")
 
 def test_crop_recommendation():
     """Test crop recommendation with new model"""
