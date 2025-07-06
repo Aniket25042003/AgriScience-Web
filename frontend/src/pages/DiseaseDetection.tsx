@@ -69,6 +69,8 @@ const DiseaseDetection: React.FC = () => {
       formData.append('file', selectedFile);
       
       console.log('Making API request to:', `${config.API_BASE_URL}/detect_disease`);
+      console.log('Selected file:', selectedFile);
+      console.log('FormData entries:', Array.from(formData.entries()));
       
       const response = await fetch(`${config.API_BASE_URL}/detect_disease`, {
         method: 'POST',
@@ -76,7 +78,7 @@ const DiseaseDetection: React.FC = () => {
       });
       
       console.log('Response status:', response.status);
-      console.log('Response headers:', response.headers);
+      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
       
       if (!response.ok) {
         const errorText = await response.text();
