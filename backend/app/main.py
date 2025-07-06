@@ -3,11 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from app.utils.crop_model import recommend_top_3_crops
 from app.utils.disease_model import detect_disease_from_image
-import logging
-
-# Configure basic logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(name)s - %(message)s")
-logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
@@ -18,6 +13,7 @@ app.add_middleware(
         "https://agriscience-web.vercel.app",
         "http://localhost:3000",
         "https://agriscience.onrender.com",
+        "http://localhost:5173",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -43,15 +39,11 @@ class CropRequest(BaseModel):
 
 @app.post("/recommend_crops")
 def recommend_crops(data: CropRequest):
-    logger.info("/recommend_crops called with payload: %s", data.dict())
     result = recommend_top_3_crops(data)
-    logger.info("/recommend_crops returning: %s", result)
     return {"recommended_crops": result}
 
 @app.post("/detect_disease")
 def detect_disease(file: UploadFile = File(...)):
-    logger.info("/detect_disease file received: filename=%s, content_type=%s", file.filename, file.content_type)
     contents = file.file.read()
     result, confidence = detect_disease_from_image(contents)
-    logger.info("/detect_disease returning: result=%s, confidence=%s", result, confidence)
     return {"result": result, "confidence": confidence} 
